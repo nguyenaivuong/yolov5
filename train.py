@@ -516,6 +516,8 @@ def parse_opt(known=False):
     parser.add_argument('--bbox_interval', type=int, default=-1, help='W&B: Set bounding-box image logging interval')
     parser.add_argument('--artifact_alias', type=str, default='latest', help='W&B: Version of dataset artifact to use')
 
+    parser.add_argument('--save_dir', type=str, default="", help='save to your location')
+
     opt = parser.parse_known_args()[0] if known else parser.parse_args()
     return opt
 
@@ -545,7 +547,8 @@ def main(opt, callbacks=Callbacks()):
             opt.exist_ok, opt.resume = opt.resume, False  # pass resume to exist_ok and disable resume
         if opt.name == 'cfg':
             opt.name = Path(opt.cfg).stem  # use model.yaml as name
-        opt.save_dir = str(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))
+        if opt.save_dir == "":
+            opt.save_dir = str(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))
 
     # DDP mode
     device = select_device(opt.device, batch_size=opt.batch_size)
